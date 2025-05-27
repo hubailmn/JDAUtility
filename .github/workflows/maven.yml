@@ -24,14 +24,10 @@ jobs:
           cache: maven
 
       - name: Build with Maven
-        run: mvn clean package
-
-      - name: Rename shaded JAR with version
-        run: |
-          VERSION="${{ github.ref_name }}"
-          mv target/*-shaded.jar target/LicensedPlugins-${VERSION}.jar
+        run: mvn clean install
 
       - name: Create GitHub Release
+        id: create_release
         uses: softprops/action-gh-release@v1
         with:
           files: target/LicensedPlugins-${{ github.ref_name }}.jar
