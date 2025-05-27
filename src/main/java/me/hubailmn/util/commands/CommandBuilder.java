@@ -3,18 +3,27 @@ package me.hubailmn.util.commands;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import me.hubailmn.util.commands.annotation.BotCommand;
+import me.hubailmn.util.commands.annotation.BotSubCommand;
 import me.hubailmn.util.log.CSend;
+import me.hubailmn.util.register.ReflectionsUtil;
+import me.hubailmn.util.register.Register;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.jetbrains.annotations.NotNull;
+import org.reflections.Reflections;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 public abstract class CommandBuilder extends ListenerAdapter {
 
+    private final Map<String, SubCommandBuilder> subCommands = new HashMap<>();
     private String name;
     private String description;
     private SlashCommandData commandData;
@@ -30,6 +39,7 @@ public abstract class CommandBuilder extends ListenerAdapter {
         this.name = annotation.name();
         this.description = annotation.description();
         register();
+        addSubCommands();
     }
 
     private void register() {
@@ -44,7 +54,45 @@ public abstract class CommandBuilder extends ListenerAdapter {
 
     }
 
-    public abstract void execute(SlashCommandInteractionEvent e);
+    public void addSubCommands() {
+        Reflections reflections = ReflectionsUtil.build(
+                Register.getBASE_PACKAGE() + ".command"
+        );
+
+        Set<Class<?>> classes = reflections.getTypesAnnotatedWith(BotSubCommand.class);
+        for (Class<?> clazz : classes) {
+            BotSubCommand subCommandAnnotation = clazz.getAnnotation(BotSubCommand.class);
+            if (subCommandAnnotation.parent().equals(this.getClass())) {
+                try {
+                    SubCommandBuilder subCommandInstance = (SubCommandBuilder) clazz.getDeclaredConstructor().newInstance();
+                    getCommandData().addSubcommands(subCommandInstance.getSubcommandData());
+                    subCommands.put(subCommandInstance.getName(), subCommandInstance);
+                } catch (Exception ex) {
+                    CSend.error("Failed to load subcommand: " + clazz.getSimpleName());
+                    ex.printStackTrace();  // Add this or use your logger to log full stack trace
+                    CSend.error(ex);
+                }
+            }
+        }
+    }
+
+    public void execute(SlashCommandInteractionEvent e) {
+        if (!subCommands.isEmpty()) {
+            String subcommandName = e.getSubcommandName();
+            if (subcommandName == null) {
+                e.reply("❌ Please specify a valid subcommand.").setEphemeral(true).queue();
+                return;
+            }
+            SubCommandBuilder subCommand = subCommands.get(subcommandName);
+            if (subCommand == null) {
+                e.reply("❌ Unknown subcommand `" + subcommandName + "`").setEphemeral(true).queue();
+                return;
+            }
+            subCommand.execute(e);
+        } else {
+            handleCommand(e);
+        }
+    }
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent e) {
@@ -67,8 +115,10 @@ public abstract class CommandBuilder extends ListenerAdapter {
 
     }
 
-    public void logUsage(SlashCommandInteractionEvent event) {
-        CSend.debug("Command used: " + getName() + " by " + event.getUser().getName());
+    public void logUsage(SlashCommandInteractionEvent e) {
+        CSend.debug("Command used: " + getName() + " by " + e.getUser().getName());
     }
+
+    public abstract void handleCommand(SlashCommandInteractionEvent e);
 
 }

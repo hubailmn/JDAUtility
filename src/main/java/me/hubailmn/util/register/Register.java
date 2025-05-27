@@ -1,5 +1,6 @@
 package me.hubailmn.util.register;
 
+import lombok.Getter;
 import me.hubailmn.util.BaseBot;
 import me.hubailmn.util.commands.CommandBuilder;
 import me.hubailmn.util.commands.CommandUtil;
@@ -19,7 +20,10 @@ import java.util.Set;
 
 public class Register {
 
+    @Getter
     private static final String BASE_PACKAGE = buildBasePackage();
+
+    @Getter
     private static final String UTIL_PACKAGE = "me.hubailmn.util";
 
     private static String buildBasePackage() {
