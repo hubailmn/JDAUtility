@@ -1,0 +1,10 @@
+bot-settings:
+  # Bot Token
+  token: BOT_TOKEN
+
+  # ONLINE, IDLE, DO_NOT_DISTURB, INVISIBLE, OFFLINE
+  status: online
+
+  activity:
+    type: Watching
+    name: over your licenses!
