@@ -36,7 +36,7 @@ public abstract class CommandBuilder extends ListenerAdapter {
             return;
         }
 
-        this.name = annotation.name();
+        this.name = annotation.name().toLowerCase();
         this.description = annotation.description();
         register();
         addSubCommands();
@@ -69,7 +69,6 @@ public abstract class CommandBuilder extends ListenerAdapter {
                     subCommands.put(subCommandInstance.getName(), subCommandInstance);
                 } catch (Exception ex) {
                     CSend.error("Failed to load subcommand: " + clazz.getSimpleName());
-                    ex.printStackTrace();  // Add this or use your logger to log full stack trace
                     CSend.error(ex);
                 }
             }
@@ -110,8 +109,7 @@ public abstract class CommandBuilder extends ListenerAdapter {
 
     @Override
     public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent e) {
-        if (!e.getName().equals(getName())) {
-        }
+        if (!e.getName().equals(getName())) return;
 
     }
 

@@ -25,7 +25,7 @@ public abstract class SubCommandBuilder extends ListenerAdapter {
             this.name = this.getClass().getSimpleName().replaceAll("Command$", "").toLowerCase();
             this.description = "";
         } else {
-            this.name = annotation.name();
+            this.name = annotation.name().toLowerCase();
             this.description = annotation.description();
         }
 
@@ -38,10 +38,6 @@ public abstract class SubCommandBuilder extends ListenerAdapter {
     }
 
     public void addOptions() {
-
-    }
-
-    public void setPermissions() {
 
     }
 
@@ -62,8 +58,7 @@ public abstract class SubCommandBuilder extends ListenerAdapter {
 
     @Override
     public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent e) {
-        if (!e.getName().equals(getName())) {
-        }
+        if (!e.getName().equals(getName())) return;
 
     }
 
