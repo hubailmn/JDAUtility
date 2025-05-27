@@ -8,7 +8,7 @@ import me.hubailmn.util.config.annotation.LoadConfig;
 )
 public class BotConfig extends ConfigBuilder {
 
-    private final String PREFIX = "bot-settings.";
+    private final String PREFIX = "bot.";
 
     public String getToken() {
         return getString(PREFIX + "token");
