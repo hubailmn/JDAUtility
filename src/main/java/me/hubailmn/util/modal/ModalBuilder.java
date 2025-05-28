@@ -11,14 +11,12 @@ import net.dv8tion.jda.api.interactions.modals.Modal;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Getter
 public abstract class ModalBuilder extends ListenerAdapter {
 
     private final Map<String, TextInput> inputs = new LinkedHashMap<>();
-    @Getter
     private String id;
-    @Getter
     private String title;
-    @Getter
     private Modal modal;
 
     public ModalBuilder() {

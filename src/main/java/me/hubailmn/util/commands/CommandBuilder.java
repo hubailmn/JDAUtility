@@ -12,19 +12,24 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 public abstract class CommandBuilder extends ListenerAdapter {
 
     private final Map<String, SubCommandBuilder> subCommands = new HashMap<>();
+    private final Map<String, List<String>> autoCompletion = new HashMap<>();
     private String name;
     private String description;
     private SlashCommandData commandData;
@@ -125,9 +130,30 @@ public abstract class CommandBuilder extends ListenerAdapter {
         }
     }
 
+    public void addAutoComplete(OptionType optionType, String optionName, String description, boolean required, List<String> suggestions) {
+        autoCompletion.put(optionName, suggestions);
+        getCommandData().addOptions(new OptionData(optionType, optionName, description, required).setAutoComplete(true));
+    }
+
+    public void addOption(OptionType optionType, String optionName, String description, boolean required) {
+        getCommandData().addOptions(new OptionData(optionType, optionName, description, required));
+    }
+
     @Override
     public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent e) {
-        if (!e.getName().equals(getName())) return;
+        if (!e.getName().equalsIgnoreCase(e.getName())) return;
+
+        String focused = e.getFocusedOption().getName();
+        List<String> choices = autoCompletion.getOrDefault(focused, Collections.emptyList());
+
+        List<Command.Choice> filtered = choices.stream()
+                .filter(word -> word.toLowerCase().startsWith(e.getFocusedOption().getValue().toLowerCase()))
+                .limit(25)
+                .map(word -> new Command.Choice(word, word))
+                .collect(Collectors.toList());
+
+        e.replyChoices(filtered).queue();
+
     }
 
     public void logUsage(SlashCommandInteractionEvent e) {
