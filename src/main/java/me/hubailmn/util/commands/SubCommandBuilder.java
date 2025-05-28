@@ -96,10 +96,16 @@ public abstract class SubCommandBuilder extends ListenerAdapter {
         if (!e.getName().equalsIgnoreCase(parent.getAnnotation(BotCommand.class).name())) return;
         if (!e.getSubcommandName().equalsIgnoreCase(getName())) return;
 
+        if (e.isAcknowledged()) return;
+
         String focused = e.getFocusedOption().getName();
         List<String> choices = autoCompletion.getOrDefault(focused, Collections.emptyList());
 
-        List<Command.Choice> filtered = choices.stream().filter(word -> word.toLowerCase().startsWith(e.getFocusedOption().getValue().toLowerCase())).limit(25).map(word -> new Command.Choice(word, word)).collect(Collectors.toList());
+        List<Command.Choice> filtered = choices.stream()
+                .filter(word -> word.toLowerCase().startsWith(e.getFocusedOption().getValue().toLowerCase()))
+                .limit(25)
+                .map(word -> new Command.Choice(word, word))
+                .collect(Collectors.toList());
 
         e.replyChoices(filtered).queue();
     }

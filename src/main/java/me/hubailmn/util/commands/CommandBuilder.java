@@ -55,6 +55,7 @@ public abstract class CommandBuilder extends ListenerAdapter {
 
     private void register() {
         setCommandData(Commands.slash(getName(), getDescription()));
+        addOptions();
     }
 
     private void setPermissions() {
@@ -140,8 +141,21 @@ public abstract class CommandBuilder extends ListenerAdapter {
     }
 
     @Override
-    public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent e) {
-        if (!e.getName().equalsIgnoreCase(e.getName())) return;
+    public void onCommandAutoCompleteInteraction(@NotNull CommandAutoCompleteInteractionEvent e) {
+        if (!e.getName().equalsIgnoreCase(getName())) return;
+
+        String subcommand = e.getSubcommandName();
+
+        if (subcommand != null) {
+            for (SubCommandBuilder sub : getSubCommands().values()) {
+                if (subcommand.equalsIgnoreCase(sub.getName())) {
+                    sub.onCommandAutoCompleteInteraction(e);
+                    return;
+                }
+            }
+        }
+
+        if (e.isAcknowledged()) return;
 
         String focused = e.getFocusedOption().getName();
         List<String> choices = autoCompletion.getOrDefault(focused, Collections.emptyList());
@@ -153,7 +167,6 @@ public abstract class CommandBuilder extends ListenerAdapter {
                 .collect(Collectors.toList());
 
         e.replyChoices(filtered).queue();
-
     }
 
     public void logUsage(SlashCommandInteractionEvent e) {
