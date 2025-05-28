@@ -69,6 +69,7 @@ public abstract class BaseBot {
             Register.database();
         }
 
+        Register.modals();
         Register.commands();
         Register.listeners();
     }

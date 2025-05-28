@@ -31,13 +31,15 @@ public abstract class ModalBuilder extends ListenerAdapter {
         this.id = annotation.id();
         this.title = annotation.title();
 
+        addInputs();
         build();
         CSend.info("Registered modal: " + id);
     }
 
-    protected void addInput(String name, TextInput input) {
+    protected void insertInput(String name, TextInput input) {
         inputs.put(name, input);
     }
+
 
     private void build() {
         Modal.Builder builder = Modal.create(id, title);
@@ -61,6 +63,7 @@ public abstract class ModalBuilder extends ListenerAdapter {
     }
 
     public abstract void handle(ModalInteractionEvent e);
+    public abstract void addInputs();
 
     public Modal getBuiltModal() {
         if (modal == null) build();

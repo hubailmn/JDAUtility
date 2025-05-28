@@ -31,7 +31,7 @@ public class GuildEventListener extends ListenerBuilder {
         event.getJDA().getGatewayPool().schedule(() -> {
             CommandUtil.updateGlobalCommands();
             CommandUtil.registerAllGuild();
-        }, 5, TimeUnit.SECONDS);
+        }, 10, TimeUnit.SECONDS);
     }
 
 }

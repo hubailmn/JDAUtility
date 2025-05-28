@@ -31,7 +31,7 @@ public class CommandUtil {
         int count = 0;
         for (Guild guild : BaseBot.getShardManager().getGuilds()) {
             guild.updateCommands().addCommands(botCommandsList).queue(
-                    success -> CSend.info("Updated commands for guild: " + guild.getName()),
+                    success -> CSend.debug("Updated commands for guild: " + guild.getName()),
                     failure -> CSend.error("Failed to update commands for guild: " + guild.getName() + " - " + failure.getMessage())
             );
             count++;
@@ -47,7 +47,7 @@ public class CommandUtil {
             return;
         }
         guild.updateCommands().addCommands(botCommandsList).queue(
-                success -> CSend.info("Updated commands for guild: " + guild.getName()),
+                success -> CSend.debug("Updated commands for guild: " + guild.getName()),
                 failure -> CSend.error("Failed to update commands for guild: " + guildId + " - " + failure.getMessage())
         );
     }
@@ -55,7 +55,7 @@ public class CommandUtil {
     public static void updateGlobalCommands() {
         BaseBot.getShardManager().getShards().forEach(jda ->
                 jda.updateCommands().addCommands().queue(
-                        success -> CSend.info("Updated global commands on shard: " + jda.getShardInfo().getShardId()),
+                        success -> CSend.debug("Updated global commands on shard: " + jda.getShardInfo().getShardId()),
                         failure -> CSend.error("Failed to update global commands on shard: " + failure.getMessage())
                 )
         );
@@ -69,7 +69,7 @@ public class CommandUtil {
         }
 
         guild.updateCommands().addCommands(botCommandsList).queue(
-                success -> CSend.info("Registered commands for guild: " + guild.getName()),
+                success -> CSend.debug("Registered commands for guild: " + guild.getName()),
                 failure -> CSend.error("Failed to register commands for guild: " + guild.getName() + " - " + failure.getMessage())
         );
     }
@@ -79,7 +79,7 @@ public class CommandUtil {
                 jda.retrieveCommands().queue(commands -> {
                     for (var command : commands) {
                         jda.deleteCommandById(command.getId()).queue(
-                                success -> CSend.info("Deleted global command: " + command.getName()),
+                                success -> CSend.debug("Deleted global command: " + command.getName()),
                                 failure -> CSend.error("Failed to delete global command: " + failure.getMessage())
                         );
                     }
@@ -93,7 +93,7 @@ public class CommandUtil {
             guild.retrieveCommands().queue(commands -> {
                 for (var command : commands) {
                     guild.deleteCommandById(command.getId()).queue(
-                            success -> CSend.info("Cleared command from guild: " + guild.getName() + " - " + command.getName()),
+                            success -> CSend.debug("Cleared command from guild: " + guild.getName() + " - " + command.getName()),
                             failure -> CSend.error("Failed to delete command from guild: " + guild.getName() + " - " + failure.getMessage())
                     );
                 }

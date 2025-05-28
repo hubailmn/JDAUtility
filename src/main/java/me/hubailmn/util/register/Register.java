@@ -14,6 +14,8 @@ import me.hubailmn.util.database.annotation.DataBaseTable;
 import me.hubailmn.util.listener.ListenerBuilder;
 import me.hubailmn.util.listener.annotation.BotListener;
 import me.hubailmn.util.log.CSend;
+import me.hubailmn.util.modal.ModalBuilder;
+import me.hubailmn.util.modal.annotation.BotModal;
 import org.reflections.Reflections;
 
 import java.util.Set;
@@ -108,6 +110,22 @@ public class Register {
         scanAndRegister(classes, "Event Listener", clazz -> {
             if (!ListenerBuilder.class.isAssignableFrom(clazz)) {
                 CSend.warn(clazz.getName() + " is annotated with @BotListener but does not extend ListenerBuilder.");
+                return;
+            }
+
+            BaseBot.getShardManager().addEventListener(clazz.getDeclaredConstructor().newInstance());
+        });
+    }
+
+    public static void modals() {
+        Reflections reflections = ReflectionsUtil.build(
+                BASE_PACKAGE + ".modal"
+        );
+
+        Set<Class<?>> classes = reflections.getTypesAnnotatedWith(BotModal.class);
+        scanAndRegister(classes, "Modal", clazz -> {
+            if (!ModalBuilder.class.isAssignableFrom(clazz)) {
+                CSend.warn(clazz.getName() + " is annotated with @BotModal but does not extend ModalBuilder.");
                 return;
             }
 

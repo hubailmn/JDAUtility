@@ -1,5 +1,7 @@
 package me.hubailmn.util.commands.annotation;
 
+import net.dv8tion.jda.api.Permission;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -11,6 +13,8 @@ public @interface BotSubCommand {
     String name();
 
     String description();
+
+    Permission[] permission() default {};
 
     Class<?> parent();
 

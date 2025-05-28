@@ -7,17 +7,18 @@ import me.hubailmn.util.commands.annotation.BotSubCommand;
 import me.hubailmn.util.log.CSend;
 import me.hubailmn.util.register.ReflectionsUtil;
 import me.hubailmn.util.register.Register;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -28,6 +29,8 @@ public abstract class CommandBuilder extends ListenerAdapter {
     private String description;
     private SlashCommandData commandData;
 
+    private List<Permission> requiredPermission = new ArrayList<>();
+
     public CommandBuilder() {
         BotCommand annotation = this.getClass().getAnnotation(BotCommand.class);
 
@@ -36,9 +39,12 @@ public abstract class CommandBuilder extends ListenerAdapter {
             return;
         }
 
-        this.name = annotation.name().toLowerCase();
+        this.name = annotation.name();
         this.description = annotation.description();
+        this.requiredPermission = Arrays.asList(annotation.permission());
+
         register();
+        setPermissions();
         addSubCommands();
     }
 
@@ -46,15 +52,18 @@ public abstract class CommandBuilder extends ListenerAdapter {
         setCommandData(Commands.slash(getName(), getDescription()));
     }
 
+    private void setPermissions() {
+        if (requiredPermission != null && !requiredPermission.isEmpty()) {
+            EnumSet<Permission> perms = EnumSet.copyOf(requiredPermission);
+            getCommandData().setDefaultPermissions(DefaultMemberPermissions.enabledFor(perms));
+        }
+    }
+
     public void addOptions() {
 
     }
 
-    public void setPermissions() {
-
-    }
-
-    public void addSubCommands() {
+    private void addSubCommands() {
         Reflections reflections = ReflectionsUtil.build(
                 Register.getBASE_PACKAGE() + ".command"
         );
@@ -96,7 +105,20 @@ public abstract class CommandBuilder extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent e) {
         if (!e.getName().equals(getName())) return;
-        logUsage(e);
+
+        Member user = e.getMember();
+
+        if (user == null) return;
+        if (requiredPermission != null && !requiredPermission.isEmpty()) {
+            if (!user.hasPermission(requiredPermission)) {
+                e.reply("❌ You don't have permission to use this command.")
+                        .setEphemeral(true)
+                        .queue();
+
+                CSend.warn("User " + user.getEffectiveName() + " tried to use " + getName() + " without required permissions.");
+                return;
+            }
+        }
 
         try {
             execute(e);
@@ -109,7 +131,8 @@ public abstract class CommandBuilder extends ListenerAdapter {
 
     @Override
     public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent e) {
-        if (!e.getName().equals(getName())) return;
+        if (!e.getName().equals(getName())) {
+        }
 
     }
 
