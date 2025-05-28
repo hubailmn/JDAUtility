@@ -85,6 +85,7 @@ public abstract class SubCommandBuilder extends ListenerAdapter {
     public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent e) {
         if (!e.getName().equals(getName())) return;
         if (e.getSubcommandName() == null) return;
+        if (!e.getFocusedOption().getName().equals(getName())) return;
     }
 
 }

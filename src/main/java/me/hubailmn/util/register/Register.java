@@ -4,7 +4,9 @@ import lombok.Getter;
 import me.hubailmn.util.BaseBot;
 import me.hubailmn.util.commands.CommandBuilder;
 import me.hubailmn.util.commands.CommandUtil;
+import me.hubailmn.util.commands.SubCommandBuilder;
 import me.hubailmn.util.commands.annotation.BotCommand;
+import me.hubailmn.util.commands.annotation.BotSubCommand;
 import me.hubailmn.util.config.ConfigBuilder;
 import me.hubailmn.util.config.ConfigUtil;
 import me.hubailmn.util.config.annotation.IgnoreFile;
@@ -98,7 +100,25 @@ public class Register {
             CommandUtil.addCommand(commandBuilder.getCommandData());
         });
 
+        subCommands();
         CommandUtil.registerAllGuild();
+    }
+
+    public static void subCommands() {
+        Reflections reflections = ReflectionsUtil.build(
+                BASE_PACKAGE + ".command"
+        );
+
+        Set<Class<?>> classes = reflections.getTypesAnnotatedWith(BotSubCommand.class);
+        scanAndRegister(classes, "Sub Command", clazz -> {
+            if (!SubCommandBuilder.class.isAssignableFrom(clazz)) {
+                CSend.warn(clazz.getName() + " is annotated with @BotSubCommand but does not extend SubCommandBuilder.");
+                return;
+            }
+
+            SubCommandBuilder subCommandBuilder = (SubCommandBuilder) clazz.getDeclaredConstructor().newInstance();
+            BaseBot.getShardManager().addEventListener(subCommandBuilder);
+        });
     }
 
     public static void listeners() {
