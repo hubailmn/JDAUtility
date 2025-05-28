@@ -83,8 +83,7 @@ public abstract class SubCommandBuilder extends ListenerAdapter {
 
     @Override
     public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent e) {
-        if (!e.getName().equals(getName())) {
-        }
+        if (!e.getName().equals(getName())) return;
 
     }
 

@@ -23,18 +23,10 @@ import java.util.Set;
 public class Register {
 
     @Getter
-    private static final String BASE_PACKAGE = buildBasePackage();
+    private static final String BASE_PACKAGE = BaseBot.getPackageName();
 
     @Getter
     private static final String UTIL_PACKAGE = "me.hubailmn.util";
-
-    private static String buildBasePackage() {
-        String name = BaseBot.getName();
-        if (name == null || name.isEmpty()) {
-            throw new IllegalStateException("BaseBot.name is not set before Register is used.");
-        }
-        return "me.hubailmn." + name.toLowerCase();
-    }
 
     public static void config() {
         Reflections reflections = ReflectionsUtil.build(

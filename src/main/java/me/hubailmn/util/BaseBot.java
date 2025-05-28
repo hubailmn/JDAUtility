@@ -19,6 +19,10 @@ public abstract class BaseBot {
 
     @Getter
     @Setter
+    private static String packageName;
+
+    @Getter
+    @Setter
     private static boolean debug;
 
     @Getter
@@ -35,17 +39,27 @@ public abstract class BaseBot {
 
     public static void launch(Class<? extends BaseBot> botClass) {
         try {
-            BaseBot bot = botClass.getDeclaredConstructor().newInstance();
-            bot.preStart();
+            setPackageName(botClass.getPackage().getName());
+            String[] packageParts = getPackageName().split("\\.");
+            String botName = packageParts[packageParts.length - 1];
+            setName(botName);
 
-            if (getToken() == null || getToken().isEmpty()) {
-                throw new IllegalStateException("Bot token is not set!");
-            }
+            BaseBot bot = botClass.getDeclaredConstructor().newInstance();
+
+            Register.config();
 
             BotConfig config = ConfigUtil.getConfig(BotConfig.class);
 
             if (config == null) {
                 throw new IllegalStateException("BotConfig is missing. Did you register it?");
+            }
+
+            setToken(config.getToken());
+
+            bot.preStart();
+
+            if (getToken() == null || getToken().isEmpty()) {
+                throw new IllegalStateException("Bot token is not set!");
             }
 
             ShardManager shardManager = DefaultShardManagerBuilder.createDefault(config.getToken())
@@ -61,7 +75,7 @@ public abstract class BaseBot {
     }
 
     public void preStart() {
-        Register.config();
+
     }
 
     public void postStart() {

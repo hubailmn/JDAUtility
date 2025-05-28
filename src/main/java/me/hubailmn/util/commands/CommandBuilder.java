@@ -64,9 +64,7 @@ public abstract class CommandBuilder extends ListenerAdapter {
     }
 
     private void addSubCommands() {
-        Reflections reflections = ReflectionsUtil.build(
-                Register.getBASE_PACKAGE() + ".command"
-        );
+        Reflections reflections = ReflectionsUtil.build(Register.getBASE_PACKAGE() + ".command");
 
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(BotSubCommand.class);
         for (Class<?> clazz : classes) {
@@ -111,9 +109,7 @@ public abstract class CommandBuilder extends ListenerAdapter {
         if (user == null) return;
         if (requiredPermission != null && !requiredPermission.isEmpty()) {
             if (!user.hasPermission(requiredPermission)) {
-                e.reply("❌ You don't have permission to use this command.")
-                        .setEphemeral(true)
-                        .queue();
+                e.reply("❌ You don't have permission to use this command.").setEphemeral(true).queue();
 
                 CSend.warn("User " + user.getEffectiveName() + " tried to use " + getName() + " without required permissions.");
                 return;
@@ -131,9 +127,7 @@ public abstract class CommandBuilder extends ListenerAdapter {
 
     @Override
     public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent e) {
-        if (!e.getName().equals(getName())) {
-        }
-
+        if (!e.getName().equals(getName())) return;
     }
 
     public void logUsage(SlashCommandInteractionEvent e) {
