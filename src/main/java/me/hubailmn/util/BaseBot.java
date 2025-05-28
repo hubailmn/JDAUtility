@@ -46,6 +46,8 @@ public abstract class BaseBot {
 
             BaseBot bot = botClass.getDeclaredConstructor().newInstance();
 
+            bot.preStart();
+
             Register.config();
 
             BotConfig config = ConfigUtil.getConfig(BotConfig.class);
@@ -56,18 +58,19 @@ public abstract class BaseBot {
 
             setToken(config.getToken());
 
-            bot.preStart();
-
             if (getToken() == null || getToken().isEmpty()) {
                 throw new IllegalStateException("Bot token is not set!");
             }
 
             ShardManager shardManager = DefaultShardManagerBuilder.createDefault(config.getToken())
-                    .setActivity(Activity.of(Activity.ActivityType.valueOf(config.getActivityType()), config.getActivityName()))
+                    .setActivity(Activity.of(config.getActivityType(), config.getActivityName()))
+                    .setStatus(config.getBotStatus())
                     .build();
 
             setShardManager(shardManager);
+
             bot.postStart();
+
         } catch (Exception e) {
             CSend.error("Failed to launch bot: " + e.getMessage());
             CSend.error(e);

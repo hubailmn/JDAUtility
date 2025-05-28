@@ -40,7 +40,6 @@ public abstract class ModalBuilder extends ListenerAdapter {
         inputs.put(name, input);
     }
 
-
     private void build() {
         Modal.Builder builder = Modal.create(id, title);
         for (TextInput input : inputs.values()) {
@@ -63,6 +62,7 @@ public abstract class ModalBuilder extends ListenerAdapter {
     }
 
     public abstract void handle(ModalInteractionEvent e);
+
     public abstract void addInputs();
 
     public Modal getBuiltModal() {

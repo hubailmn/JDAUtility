@@ -7,6 +7,7 @@ import me.hubailmn.util.commands.CommandUtil;
 import me.hubailmn.util.commands.annotation.BotCommand;
 import me.hubailmn.util.config.ConfigBuilder;
 import me.hubailmn.util.config.ConfigUtil;
+import me.hubailmn.util.config.annotation.IgnoreFile;
 import me.hubailmn.util.config.annotation.LoadConfig;
 import me.hubailmn.util.database.DataBaseConnection;
 import me.hubailmn.util.database.TableBuilder;
@@ -39,6 +40,14 @@ public class Register {
             if (!ConfigBuilder.class.isAssignableFrom(clazz)) {
                 CSend.warn(clazz.getName() + " is annotated with @LoadConfig but does not extend ConfigBuilder.");
                 return;
+            }
+
+            if (clazz.isAnnotationPresent(IgnoreFile.class)) {
+                IgnoreFile ignore = clazz.getAnnotation(IgnoreFile.class);
+                if ((ignore.database() && !BaseBot.isDatabase())) {
+                    CSend.debug("Skipping config " + clazz.getSimpleName() + " due to @IgnoreFile conditions.");
+                    return;
+                }
             }
 
             @SuppressWarnings("unchecked")

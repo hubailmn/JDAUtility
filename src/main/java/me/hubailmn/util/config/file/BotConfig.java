@@ -2,6 +2,8 @@ package me.hubailmn.util.config.file;
 
 import me.hubailmn.util.config.ConfigBuilder;
 import me.hubailmn.util.config.annotation.LoadConfig;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
 
 @LoadConfig(
         path = "config/BotConfig.yml"
@@ -14,12 +16,12 @@ public class BotConfig extends ConfigBuilder {
         return getString(PREFIX + "token");
     }
 
-    public String getBotStatus() {
-        return getString(PREFIX + "status");
+    public OnlineStatus getBotStatus() {
+        return OnlineStatus.fromKey(getString(PREFIX + "status").toUpperCase());
     }
 
-    public String getActivityType() {
-        return getString(PREFIX + "activity.type").toUpperCase();
+    public Activity.ActivityType getActivityType() {
+        return Activity.ActivityType.valueOf(getString(PREFIX + "activity.type").toUpperCase());
     }
 
     public String getActivityName() {

@@ -3,9 +3,11 @@ package me.hubailmn.util.config.file;
 import lombok.Data;
 import me.hubailmn.util.BaseBot;
 import me.hubailmn.util.config.ConfigBuilder;
+import me.hubailmn.util.config.annotation.IgnoreFile;
 import me.hubailmn.util.config.annotation.LoadConfig;
 
 @LoadConfig(path = "config/DBConfig.yml")
+@IgnoreFile(database = true)
 public class DBConfig extends ConfigBuilder {
 
     public DBConfig() {
