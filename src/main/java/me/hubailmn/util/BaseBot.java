@@ -53,7 +53,7 @@ public abstract class BaseBot {
             BotConfig config = ConfigUtil.getConfig(BotConfig.class);
 
             if (config == null) {
-                throw new IllegalStateException("BotConfig is missing. Did you register it?");
+                throw new IllegalStateException("BotConfig is missing.");
             }
 
             setToken(config.getToken());
