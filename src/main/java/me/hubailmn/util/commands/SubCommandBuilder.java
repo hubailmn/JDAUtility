@@ -91,6 +91,11 @@ public abstract class SubCommandBuilder extends ListenerAdapter {
         getSubcommandData().addOptions(new OptionData(optionType, optionName, description, required));
     }
 
+    public void updateAutoCompletion(String optionName, List<String> suggestions) {
+        autoCompletion.put(optionName, suggestions);
+        CSend.debug("Updated auto-completion for option '%s' with %d entries.".formatted(optionName, suggestions.size()));
+    }
+
     @Override
     public void onCommandAutoCompleteInteraction(@NotNull CommandAutoCompleteInteractionEvent e) {
         if (!e.getName().equalsIgnoreCase(parent.getAnnotation(BotCommand.class).name())) return;
