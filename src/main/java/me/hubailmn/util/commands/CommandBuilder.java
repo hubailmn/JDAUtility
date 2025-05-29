@@ -65,10 +65,6 @@ public abstract class CommandBuilder extends ListenerAdapter {
         }
     }
 
-    public void addOptions() {
-
-    }
-
     private void addSubCommands() {
         Reflections reflections = ReflectionsUtil.build(Register.getBASE_PACKAGE() + ".command");
 
@@ -106,6 +102,29 @@ public abstract class CommandBuilder extends ListenerAdapter {
         }
     }
 
+    public void addOption(OptionType optionType, String optionName, String description, boolean required) {
+        getCommandData().addOptions(new OptionData(optionType, optionName, description, required));
+    }
+
+    public void addOption(OptionType optionType, String optionName, String description, boolean required, List<String> suggestions) {
+        autoCompletion.put(optionName, suggestions);
+        getCommandData().addOptions(new OptionData(optionType, optionName, description, required).setAutoComplete(true));
+    }
+
+    public void updateSuggestions(String optionName, List<String> suggestions) {
+        if (!autoCompletion.containsKey(optionName)) return;
+        autoCompletion.put(optionName, suggestions);
+        CSend.debug("Updated auto-completion for option '%s' with %d entries.".formatted(optionName, suggestions.size()));
+    }
+
+    public void addOptions() {
+
+    }
+
+    public void autoComplete() {
+
+    }
+
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent e) {
         if (!e.getName().equals(getName())) return;
@@ -131,15 +150,6 @@ public abstract class CommandBuilder extends ListenerAdapter {
         }
     }
 
-    public void addAutoComplete(OptionType optionType, String optionName, String description, boolean required, List<String> suggestions) {
-        autoCompletion.put(optionName, suggestions);
-        getCommandData().addOptions(new OptionData(optionType, optionName, description, required).setAutoComplete(true));
-    }
-
-    public void addOption(OptionType optionType, String optionName, String description, boolean required) {
-        getCommandData().addOptions(new OptionData(optionType, optionName, description, required));
-    }
-
     @Override
     public void onCommandAutoCompleteInteraction(@NotNull CommandAutoCompleteInteractionEvent e) {
         if (!e.getName().equalsIgnoreCase(getName())) return;
@@ -156,15 +166,12 @@ public abstract class CommandBuilder extends ListenerAdapter {
         }
 
         if (e.isAcknowledged()) return;
+        autoComplete();
 
         String focused = e.getFocusedOption().getName();
         List<String> choices = autoCompletion.getOrDefault(focused, Collections.emptyList());
 
-        List<Command.Choice> filtered = choices.stream()
-                .filter(word -> word.toLowerCase().startsWith(e.getFocusedOption().getValue().toLowerCase()))
-                .limit(25)
-                .map(word -> new Command.Choice(word, word))
-                .collect(Collectors.toList());
+        List<Command.Choice> filtered = choices.stream().filter(word -> word.toLowerCase().startsWith(e.getFocusedOption().getValue().toLowerCase())).limit(25).map(word -> new Command.Choice(word, word)).collect(Collectors.toList());
 
         e.replyChoices(filtered).queue();
     }
@@ -174,5 +181,4 @@ public abstract class CommandBuilder extends ListenerAdapter {
     }
 
     public abstract void handleCommand(SlashCommandInteractionEvent e);
-
 }

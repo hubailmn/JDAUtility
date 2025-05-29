@@ -24,17 +24,18 @@ import java.util.stream.Collectors;
 public abstract class SubCommandBuilder extends ListenerAdapter {
 
     private final Map<String, List<String>> autoCompletion = new HashMap<>();
-    String name;
-    String description;
-    SubcommandData subcommandData;
-    Class<?> parent;
+    private String name;
+    private String description;
+    private SubcommandData subcommandData;
+    private Class<?> parent;
     private List<Permission> requiredPermission = new ArrayList<>();
 
     public SubCommandBuilder() {
         BotSubCommand annotation = this.getClass().getAnnotation(BotSubCommand.class);
 
         if (annotation == null) {
-            CSend.error("Failed to load subcommand: " + this.getClass().getSimpleName() + ". Subcommand class must be annotated with @BotSubCommand.");
+            CSend.error("Failed to load subcommand: " + this.getClass().getSimpleName() +
+                    ". Subcommand class must be annotated with @BotSubCommand.");
             return;
         }
 
@@ -51,26 +52,45 @@ public abstract class SubCommandBuilder extends ListenerAdapter {
         addOptions();
     }
 
-    public void addOptions() {
-
+    public void addOption(OptionType optionType, String optionName, String description, boolean required) {
+        subcommandData.addOptions(new OptionData(optionType, optionName, description, required));
     }
 
-    public abstract void execute(SlashCommandInteractionEvent e);
+    public void addOption(OptionType optionType, String optionName, String description, boolean required, List<String> suggestions) {
+        autoCompletion.put(optionName, suggestions);
+        subcommandData.addOptions(new OptionData(optionType, optionName, description, required).setAutoComplete(true));
+    }
+
+    public void updateSuggestions(String optionName, List<String> suggestions) {
+        boolean optionExists = subcommandData.getOptions().stream()
+                .anyMatch(opt -> opt.getName().equals(optionName));
+        if (!optionExists) {
+            CSend.warn("Tried to update auto-completion for nonexistent option: " + optionName);
+            return;
+        }
+
+        autoCompletion.put(optionName, suggestions);
+        CSend.debug("Updated auto-completion for option '%s' with %d entries.".formatted(optionName, suggestions.size()));
+    }
+
+    public void addOptions() {
+    }
+
+    public void autoComplete() {
+    }
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent e) {
-        if (!e.getName().equals(getName())) return;
+        if (!e.getName().equalsIgnoreCase(parent.getAnnotation(BotCommand.class).name())) return;
+        if (!e.getSubcommandName().equalsIgnoreCase(getName())) return;
 
         Member user = e.getMember();
-
         if (user == null) return;
-        if (requiredPermission != null && !requiredPermission.isEmpty()) {
-            if (!user.hasPermission(requiredPermission)) {
-                e.reply("❌ You don't have permission to use this subcommand.").setEphemeral(true).queue();
 
-                CSend.warn("User " + (user.getEffectiveName()) + " tried to use subcommand " + getName() + " without required permissions.");
-                return;
-            }
+        if (!requiredPermission.isEmpty() && !user.hasPermission(requiredPermission)) {
+            e.reply("❌ You don't have permission to use this subcommand.").setEphemeral(true).queue();
+            CSend.warn("User " + user.getEffectiveName() + " tried to use subcommand " + getName() + " without required permissions.");
+            return;
         }
 
         try {
@@ -82,26 +102,13 @@ public abstract class SubCommandBuilder extends ListenerAdapter {
         }
     }
 
-    public void addAutoComplete(OptionType optionType, String optionName, String description, boolean required, List<String> suggestions) {
-        autoCompletion.put(optionName, suggestions);
-        getSubcommandData().addOptions(new OptionData(optionType, optionName, description, required).setAutoComplete(true));
-    }
-
-    public void addOption(OptionType optionType, String optionName, String description, boolean required) {
-        getSubcommandData().addOptions(new OptionData(optionType, optionName, description, required));
-    }
-
-    public void updateAutoCompletion(String optionName, List<String> suggestions) {
-        autoCompletion.put(optionName, suggestions);
-        CSend.debug("Updated auto-completion for option '%s' with %d entries.".formatted(optionName, suggestions.size()));
-    }
-
     @Override
     public void onCommandAutoCompleteInteraction(@NotNull CommandAutoCompleteInteractionEvent e) {
         if (!e.getName().equalsIgnoreCase(parent.getAnnotation(BotCommand.class).name())) return;
         if (!e.getSubcommandName().equalsIgnoreCase(getName())) return;
-
         if (e.isAcknowledged()) return;
+
+        autoComplete();
 
         String focused = e.getFocusedOption().getName();
         List<String> choices = autoCompletion.getOrDefault(focused, Collections.emptyList());
@@ -115,4 +122,5 @@ public abstract class SubCommandBuilder extends ListenerAdapter {
         e.replyChoices(filtered).queue();
     }
 
+    public abstract void execute(SlashCommandInteractionEvent e);
 }
