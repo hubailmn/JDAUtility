@@ -31,7 +31,7 @@ public abstract class ModalBuilder extends ListenerAdapter {
 
         addInputs();
         build();
-        CSend.info("Registered modal: " + id);
+        CSend.debug("Registered modal: " + id);
     }
 
     protected void insertInput(String name, TextInput input) {

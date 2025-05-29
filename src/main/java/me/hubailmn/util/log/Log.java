@@ -43,32 +43,32 @@ public class Log {
         return configPath;
     }
 
-    public static void error(String e) {
-        writeToFile(errorFile, e);
-    }
-
-    public static void error(Throwable e) {
-        writeToFile(errorFile, formatError(e));
+    public static void error(String message) {
+        writeToFile(errorFile, formatMessage(LogLevel.ERROR, message));
     }
 
     public static void debug(String message) {
-        writeToFile(debugFile, formatMessage("DEBUG", message));
+        writeToFile(debugFile, formatMessage(LogLevel.DEBUG, message));
     }
 
     public static void log(String message) {
-        writeToFile(logFile, formatMessage("INFO", message));
+        writeToFile(logFile, formatMessage(LogLevel.INFO, message));
     }
 
-    private static String formatError(Throwable e) {
+    public static void error(Throwable e) {
+        writeToFile(errorFile, formatThrowable(e));
+    }
+
+    private static String formatThrowable(Throwable e) {
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
-        return "[%s] ERROR:\n%s\n".formatted(
+        return "[%s] ERROR: %s\n".formatted(
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                sw
+                sw.toString()
         );
     }
 
-    private static String formatMessage(String level, String message) {
+    private static String formatMessage(LogLevel level, String message) {
         return "[%s] %s: %s\n".formatted(
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                 level,
@@ -83,5 +83,9 @@ public class Log {
             CSend.error("Failed to write to log file: " + file.getAbsolutePath());
             CSend.error(e);
         }
+    }
+
+    public enum LogLevel {
+        INFO, WARN, DEBUG, ERROR
     }
 }
