@@ -40,15 +40,10 @@ public class CommandUtil {
         CSend.info("Updated commands for " + count + " guild(s).");
     }
 
-    public static void updateGuildCommands(Long guildId) {
-        Guild guild = BaseBot.getShardManager().getGuildById(guildId);
-        if (guild == null) {
-            CSend.warn("Guild with id " + guildId + " does not exist. Skipping command update.");
-            return;
-        }
+    public static void updateGuildCommands(Guild guild) {
         guild.updateCommands().addCommands(botCommandsList).queue(
                 success -> CSend.debug("Updated commands for guild: " + guild.getName()),
-                failure -> CSend.error("Failed to update commands for guild: " + guildId + " - " + failure.getMessage())
+                failure -> CSend.error("Failed to update commands for guild: " + guild + " - " + failure.getMessage())
         );
     }
 

@@ -19,6 +19,7 @@ import me.hubailmn.util.listener.annotation.BotListener;
 import me.hubailmn.util.log.CSend;
 import me.hubailmn.util.modal.ModalBuilder;
 import me.hubailmn.util.modal.annotation.BotModal;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.reflections.Reflections;
 
 import java.util.Set;
@@ -95,7 +96,11 @@ public class Register {
                 return;
             }
 
-            CommandBuilder commandBuilder = (CommandBuilder) clazz.getDeclaredConstructor().newInstance();
+            @SuppressWarnings("unchecked")
+            Class<? extends CommandBuilder> typedClass = (Class<? extends CommandBuilder>) clazz;
+
+            CommandBuilder commandBuilder = typedClass.getDeclaredConstructor().newInstance();
+            InstanceManager.addCommand(typedClass, commandBuilder);
             BaseBot.getShardManager().addEventListener(commandBuilder);
             CommandUtil.addCommand(commandBuilder.getCommandData());
         });
@@ -116,7 +121,11 @@ public class Register {
                 return;
             }
 
-            SubCommandBuilder subCommandBuilder = (SubCommandBuilder) clazz.getDeclaredConstructor().newInstance();
+            @SuppressWarnings("unchecked")
+            Class<? extends SubCommandBuilder> typedClass = (Class<? extends SubCommandBuilder>) clazz;
+
+            SubCommandBuilder subCommandBuilder = typedClass.getDeclaredConstructor().newInstance();
+            InstanceManager.addSubCommand(typedClass, subCommandBuilder);
             BaseBot.getShardManager().addEventListener(subCommandBuilder);
         });
     }
@@ -134,7 +143,12 @@ public class Register {
                 return;
             }
 
-            BaseBot.getShardManager().addEventListener(clazz.getDeclaredConstructor().newInstance());
+            @SuppressWarnings("unchecked")
+            Class<? extends ListenerAdapter> typedClass = (Class<? extends ListenerAdapter>) clazz;
+
+            ListenerAdapter listenerInstance = typedClass.getDeclaredConstructor().newInstance();
+            InstanceManager.addListener(typedClass, listenerInstance);
+            BaseBot.getShardManager().addEventListener(listenerInstance);
         });
     }
 
@@ -150,7 +164,12 @@ public class Register {
                 return;
             }
 
-            BaseBot.getShardManager().addEventListener(clazz.getDeclaredConstructor().newInstance());
+            @SuppressWarnings("unchecked")
+            Class<? extends ModalBuilder> typedClass = (Class<? extends ModalBuilder>) clazz;
+
+            ModalBuilder modalInstance = typedClass.getDeclaredConstructor().newInstance();
+            InstanceManager.addModal(typedClass, modalInstance);
+            BaseBot.getShardManager().addEventListener(modalInstance);
         });
     }
 

@@ -62,8 +62,7 @@ public abstract class SubCommandBuilder extends ListenerAdapter {
     }
 
     public void updateSuggestions(String optionName, List<String> suggestions) {
-        boolean optionExists = subcommandData.getOptions().stream()
-                .anyMatch(opt -> opt.getName().equals(optionName));
+        boolean optionExists = subcommandData.getOptions().stream().anyMatch(opt -> opt.getName().equals(optionName));
         if (!optionExists) {
             CSend.warn("Tried to update auto-completion for nonexistent option: " + optionName);
             return;

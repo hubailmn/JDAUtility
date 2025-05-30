@@ -3,10 +3,8 @@ package me.hubailmn.util.commands;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import me.hubailmn.util.commands.annotation.BotCommand;
-import me.hubailmn.util.commands.annotation.BotSubCommand;
 import me.hubailmn.util.log.CSend;
-import me.hubailmn.util.register.ReflectionsUtil;
-import me.hubailmn.util.register.Register;
+import me.hubailmn.util.register.InstanceManager;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
@@ -19,7 +17,6 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.jetbrains.annotations.NotNull;
-import org.reflections.Reflections;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -66,20 +63,11 @@ public abstract class CommandBuilder extends ListenerAdapter {
     }
 
     private void addSubCommands() {
-        Reflections reflections = ReflectionsUtil.build(Register.getBASE_PACKAGE() + ".command");
-
-        Set<Class<?>> classes = reflections.getTypesAnnotatedWith(BotSubCommand.class);
-        for (Class<?> clazz : classes) {
-            BotSubCommand subCommandAnnotation = clazz.getAnnotation(BotSubCommand.class);
-            if (subCommandAnnotation.parent().equals(this.getClass())) {
-                try {
-                    SubCommandBuilder subCommandInstance = (SubCommandBuilder) clazz.getDeclaredConstructor().newInstance();
-                    getCommandData().addSubcommands(subCommandInstance.getSubcommandData());
-                    subCommands.put(subCommandInstance.getName(), subCommandInstance);
-                } catch (Exception ex) {
-                    CSend.error("Failed to load subcommand: " + clazz.getSimpleName());
-                    CSend.error(ex);
-                }
+        var subCommandsInstance = InstanceManager.getAllSubCommands();
+        for (SubCommandBuilder subCommand : subCommandsInstance) {
+            if (subCommand.getParent().equals(this.getClass())) {
+                getCommandData().addSubcommands(subCommand.getSubcommandData());
+                subCommands.put(subCommand.getName(), subCommand);
             }
         }
     }
