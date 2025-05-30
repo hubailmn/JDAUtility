@@ -79,12 +79,14 @@ public abstract class CommandBuilder extends ListenerAdapter {
                 e.reply("❌ Please specify a valid subcommand.").setEphemeral(true).queue();
                 return;
             }
+
             SubCommandBuilder subCommand = subCommands.get(subcommandName);
             if (subCommand == null) {
                 e.reply("❌ Unknown subcommand `" + subcommandName + "`").setEphemeral(true).queue();
                 return;
             }
-            subCommand.execute(e);
+
+            subCommand.handleSubCommand(e);
         } else {
             handleCommand(e);
         }
@@ -147,7 +149,7 @@ public abstract class CommandBuilder extends ListenerAdapter {
         if (subcommand != null) {
             for (SubCommandBuilder sub : getSubCommands().values()) {
                 if (subcommand.equalsIgnoreCase(sub.getName())) {
-                    sub.onCommandAutoCompleteInteraction(e);
+                    sub.handleAutoComplete(e);
                     return;
                 }
             }

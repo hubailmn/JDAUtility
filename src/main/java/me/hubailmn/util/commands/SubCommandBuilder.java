@@ -69,7 +69,6 @@ public abstract class SubCommandBuilder extends ListenerAdapter {
         }
 
         autoCompletion.put(optionName, suggestions);
-        CSend.debug("Updated auto-completion for option '%s' with %d entries.".formatted(optionName, suggestions.size()));
     }
 
     public void addOptions() {
@@ -78,8 +77,7 @@ public abstract class SubCommandBuilder extends ListenerAdapter {
     public void autoComplete() {
     }
 
-    @Override
-    public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent e) {
+    public void handleSubCommand(@NotNull SlashCommandInteractionEvent e) {
         if (!e.getName().equalsIgnoreCase(parent.getAnnotation(BotCommand.class).name())) return;
         if (!e.getSubcommandName().equalsIgnoreCase(getName())) return;
 
@@ -101,8 +99,7 @@ public abstract class SubCommandBuilder extends ListenerAdapter {
         }
     }
 
-    @Override
-    public void onCommandAutoCompleteInteraction(@NotNull CommandAutoCompleteInteractionEvent e) {
+    public void handleAutoComplete(@NotNull CommandAutoCompleteInteractionEvent e) {
         if (!e.getName().equalsIgnoreCase(parent.getAnnotation(BotCommand.class).name())) return;
         if (!e.getSubcommandName().equalsIgnoreCase(getName())) return;
         if (e.isAcknowledged()) return;

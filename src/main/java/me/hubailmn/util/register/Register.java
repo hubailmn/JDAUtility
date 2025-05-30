@@ -85,6 +85,7 @@ public class Register {
     }
 
     public static void commands() {
+        subCommands();
         Reflections reflections = ReflectionsUtil.build(
                 BASE_PACKAGE + ".command"
         );
@@ -105,7 +106,6 @@ public class Register {
             CommandUtil.addCommand(commandBuilder.getCommandData());
         });
 
-        subCommands();
         CommandUtil.registerAllGuild();
     }
 
