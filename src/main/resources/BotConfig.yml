@@ -1,6 +1,6 @@
 bot:
   # Bot Token
-  token: BOT_TOKEN
+  token: "BOT_TOKEN"
 
   # ONLINE, IDLE, DO_NOT_DISTURB, INVISIBLE, OFFLINE
   status: online
