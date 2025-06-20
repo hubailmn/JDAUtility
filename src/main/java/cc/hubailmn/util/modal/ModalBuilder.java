@@ -1,8 +1,8 @@
 package cc.hubailmn.util.modal;
 
-import lombok.Getter;
 import cc.hubailmn.util.log.CSend;
 import cc.hubailmn.util.modal.annotation.BotModal;
+import lombok.Getter;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;

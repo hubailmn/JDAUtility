@@ -1,8 +1,8 @@
 package cc.hubailmn.util.config;
 
-import lombok.Getter;
 import cc.hubailmn.util.log.CSend;
 import cc.hubailmn.util.register.Register;
+import lombok.Getter;
 
 import java.util.*;
 

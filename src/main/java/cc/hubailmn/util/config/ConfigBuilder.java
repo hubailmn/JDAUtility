@@ -1,8 +1,8 @@
 package cc.hubailmn.util.config;
 
-import lombok.Data;
 import cc.hubailmn.util.config.annotation.LoadConfig;
 import cc.hubailmn.util.log.CSend;
+import lombok.Data;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;

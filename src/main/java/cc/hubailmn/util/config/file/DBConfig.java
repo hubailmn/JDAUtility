@@ -1,10 +1,10 @@
 package cc.hubailmn.util.config.file;
 
-import lombok.Data;
 import cc.hubailmn.util.BaseBot;
 import cc.hubailmn.util.config.ConfigBuilder;
 import cc.hubailmn.util.config.annotation.IgnoreFile;
 import cc.hubailmn.util.config.annotation.LoadConfig;
+import lombok.Data;
 
 @LoadConfig(path = "config/DBConfig.yml")
 @IgnoreFile(database = true)

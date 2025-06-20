@@ -1,12 +1,12 @@
 package cc.hubailmn.util;
 
-import lombok.Getter;
-import lombok.Setter;
 import cc.hubailmn.util.config.ConfigUtil;
 import cc.hubailmn.util.config.file.BotConfig;
 import cc.hubailmn.util.database.DataBaseConnection;
 import cc.hubailmn.util.log.CSend;
 import cc.hubailmn.util.register.Register;
+import lombok.Getter;
+import lombok.Setter;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;

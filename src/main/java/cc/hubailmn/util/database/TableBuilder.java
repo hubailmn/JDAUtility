@@ -1,8 +1,8 @@
 package cc.hubailmn.util.database;
 
-import lombok.Getter;
 import cc.hubailmn.util.database.annotation.DataBaseTable;
 import cc.hubailmn.util.log.CSend;
+import lombok.Getter;
 
 import java.sql.Connection;
 import java.sql.SQLException;

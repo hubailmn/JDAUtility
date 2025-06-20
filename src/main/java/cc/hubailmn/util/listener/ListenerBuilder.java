@@ -1,9 +1,9 @@
 package cc.hubailmn.util.listener;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import cc.hubailmn.util.listener.annotation.BotListener;
 import cc.hubailmn.util.log.CSend;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 @EqualsAndHashCode(callSuper = true)

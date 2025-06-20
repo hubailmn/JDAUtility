@@ -1,10 +1,10 @@
 package cc.hubailmn.util.commands;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import cc.hubailmn.util.commands.annotation.BotCommand;
 import cc.hubailmn.util.commands.annotation.BotSubCommand;
 import cc.hubailmn.util.log.CSend;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;

@@ -1,6 +1,5 @@
 package cc.hubailmn.util.register;
 
-import lombok.Getter;
 import cc.hubailmn.util.BaseBot;
 import cc.hubailmn.util.commands.CommandBuilder;
 import cc.hubailmn.util.commands.CommandUtil;
@@ -19,6 +18,7 @@ import cc.hubailmn.util.listener.annotation.BotListener;
 import cc.hubailmn.util.log.CSend;
 import cc.hubailmn.util.modal.ModalBuilder;
 import cc.hubailmn.util.modal.annotation.BotModal;
+import lombok.Getter;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.reflections.Reflections;
 

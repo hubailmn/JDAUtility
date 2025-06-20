@@ -1,10 +1,10 @@
 package cc.hubailmn.util.register;
 
-import lombok.Getter;
 import cc.hubailmn.util.commands.CommandBuilder;
 import cc.hubailmn.util.commands.SubCommandBuilder;
 import cc.hubailmn.util.log.CSend;
 import cc.hubailmn.util.modal.ModalBuilder;
+import lombok.Getter;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.*;
