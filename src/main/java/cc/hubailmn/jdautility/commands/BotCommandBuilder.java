@@ -23,9 +23,9 @@ import java.util.stream.Collectors;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public abstract class CommandBuilder extends ListenerAdapter {
+public abstract class BotCommandBuilder extends ListenerAdapter {
 
-    private final Map<String, SubCommandBuilder> subCommands = new HashMap<>();
+    private final Map<String, BotSubCommandBuilder> subCommands = new HashMap<>();
     private final Map<String, List<String>> autoCompletion = new HashMap<>();
     private String name;
     private String description;
@@ -33,7 +33,7 @@ public abstract class CommandBuilder extends ListenerAdapter {
 
     private List<Permission> requiredPermission = new ArrayList<>();
 
-    public CommandBuilder() {
+    public BotCommandBuilder() {
         BotCommand annotation = this.getClass().getAnnotation(BotCommand.class);
 
         if (annotation == null) {
@@ -64,7 +64,7 @@ public abstract class CommandBuilder extends ListenerAdapter {
 
     private void addSubCommands() {
         var subCommandsInstance = InstanceManager.getAllSubCommands();
-        for (SubCommandBuilder subCommand : subCommandsInstance) {
+        for (BotSubCommandBuilder subCommand : subCommandsInstance) {
             if (subCommand.getParent().equals(this.getClass())) {
                 getCommandData().addSubcommands(subCommand.getSubcommandData());
                 subCommands.put(subCommand.getName(), subCommand);
@@ -80,7 +80,7 @@ public abstract class CommandBuilder extends ListenerAdapter {
                 return;
             }
 
-            SubCommandBuilder subCommand = subCommands.get(subcommandName);
+            BotSubCommandBuilder subCommand = subCommands.get(subcommandName);
             if (subCommand == null) {
                 e.reply("❌ Unknown subcommand `" + subcommandName + "`").setEphemeral(true).queue();
                 return;
@@ -147,7 +147,7 @@ public abstract class CommandBuilder extends ListenerAdapter {
         String subcommand = e.getSubcommandName();
 
         if (subcommand != null) {
-            for (SubCommandBuilder sub : getSubCommands().values()) {
+            for (BotSubCommandBuilder sub : getSubCommands().values()) {
                 if (subcommand.equalsIgnoreCase(sub.getName())) {
                     sub.handleAutoComplete(e);
                     return;

@@ -6,12 +6,12 @@ import lombok.Getter;
 
 import java.util.*;
 
-public class ConfigUtil {
+public class BotConfigUtil {
 
     @Getter
-    private static final Map<Class<?>, ConfigBuilder> CONFIG_INSTANCE = new HashMap<>();
+    private static final Map<Class<?>, BotConfigBuilder> CONFIG_INSTANCE = new HashMap<>();
 
-    private ConfigUtil() {
+    private BotConfigUtil() {
         throw new UnsupportedOperationException("This is a utility class.");
     }
 
@@ -24,7 +24,7 @@ public class ConfigUtil {
         if (CONFIG_INSTANCE.isEmpty()) {
             Register.config();
         }
-        CONFIG_INSTANCE.values().forEach(ConfigBuilder::reload);
+        CONFIG_INSTANCE.values().forEach(BotConfigBuilder::reload);
         CSend.info("Reloaded all configs (" + CONFIG_INSTANCE.size() + ")");
     }
 
@@ -47,13 +47,13 @@ public class ConfigUtil {
 
     @SuppressWarnings("unchecked")
     public static <T> void reload(Class<T> clazz) {
-        ConfigBuilder builder = CONFIG_INSTANCE.get(clazz);
+        BotConfigBuilder builder = CONFIG_INSTANCE.get(clazz);
         if (builder != null) {
             builder.reload();
             CSend.info("Reloaded config: " + clazz.getSimpleName());
         } else {
             try {
-                ConfigBuilder instance = ((Class<? extends ConfigBuilder>) clazz).getDeclaredConstructor().newInstance();
+                BotConfigBuilder instance = ((Class<? extends BotConfigBuilder>) clazz).getDeclaredConstructor().newInstance();
                 CONFIG_INSTANCE.put(clazz, instance);
                 CSend.info("Loaded and registered config: " + clazz.getSimpleName());
             } catch (Exception e) {
@@ -64,11 +64,11 @@ public class ConfigUtil {
     }
 
     public static void saveAll() {
-        CONFIG_INSTANCE.values().forEach(ConfigBuilder::save);
+        CONFIG_INSTANCE.values().forEach(BotConfigBuilder::save);
     }
 
     public static void save(Class<?> clazz) {
-        ConfigBuilder builder = CONFIG_INSTANCE.get(clazz);
+        BotConfigBuilder builder = CONFIG_INSTANCE.get(clazz);
         if (builder != null) {
             builder.save();
         }

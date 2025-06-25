@@ -1,7 +1,7 @@
 package cc.hubailmn.jdautility.register;
 
-import cc.hubailmn.jdautility.commands.CommandBuilder;
-import cc.hubailmn.jdautility.commands.SubCommandBuilder;
+import cc.hubailmn.jdautility.commands.BotCommandBuilder;
+import cc.hubailmn.jdautility.commands.BotSubCommandBuilder;
 import cc.hubailmn.jdautility.log.CSend;
 import cc.hubailmn.jdautility.modal.ModalBuilder;
 import lombok.Getter;
@@ -12,10 +12,10 @@ import java.util.*;
 public class InstanceManager {
 
     @Getter
-    private static final Map<Class<? extends CommandBuilder>, CommandBuilder> commandCache = new HashMap<>();
+    private static final Map<Class<? extends BotCommandBuilder>, BotCommandBuilder> commandCache = new HashMap<>();
 
     @Getter
-    private static final Map<Class<? extends SubCommandBuilder>, SubCommandBuilder> subCommands = new HashMap<>();
+    private static final Map<Class<? extends BotSubCommandBuilder>, BotSubCommandBuilder> subCommands = new HashMap<>();
 
     @Getter
     private static final Map<Class<? extends ListenerAdapter>, ListenerAdapter> listeners = new HashMap<>();
@@ -57,51 +57,51 @@ public class InstanceManager {
         return Collections.unmodifiableCollection(cacheMap.values());
     }
 
-    public static void addCommand(Class<? extends CommandBuilder> clazz, CommandBuilder instance) {
+    public static void addCommand(Class<? extends BotCommandBuilder> clazz, BotCommandBuilder instance) {
         addInternal(clazz, instance, commandCache);
     }
 
-    public static CommandBuilder getCommand(Class<? extends CommandBuilder> clazz) {
+    public static BotCommandBuilder getCommand(Class<? extends BotCommandBuilder> clazz) {
         return getInternal(clazz, commandCache);
     }
 
-    public static void unregisterCommand(Class<? extends CommandBuilder> clazz) {
+    public static void unregisterCommand(Class<? extends BotCommandBuilder> clazz) {
         unregisterInternal(clazz, commandCache);
     }
 
-    public static boolean isCommandRegistered(Class<? extends CommandBuilder> clazz) {
+    public static boolean isCommandRegistered(Class<? extends BotCommandBuilder> clazz) {
         return isRegisteredInternal(clazz, commandCache);
     }
 
-    public static Set<Class<? extends CommandBuilder>> listRegisteredCommands() {
+    public static Set<Class<? extends BotCommandBuilder>> listRegisteredCommands() {
         return listRegisteredInternal(commandCache);
     }
 
-    public static Collection<CommandBuilder> getAllCommands() {
+    public static Collection<BotCommandBuilder> getAllCommands() {
         return getAllInternal(commandCache);
     }
 
-    public static void addSubCommand(Class<? extends SubCommandBuilder> clazz, SubCommandBuilder instance) {
+    public static void addSubCommand(Class<? extends BotSubCommandBuilder> clazz, BotSubCommandBuilder instance) {
         addInternal(clazz, instance, subCommands);
     }
 
-    public static SubCommandBuilder getSubCommand(Class<? extends SubCommandBuilder> clazz) {
+    public static BotSubCommandBuilder getSubCommand(Class<? extends BotSubCommandBuilder> clazz) {
         return getInternal(clazz, subCommands);
     }
 
-    public static void unregisterSubCommand(Class<? extends SubCommandBuilder> clazz) {
+    public static void unregisterSubCommand(Class<? extends BotSubCommandBuilder> clazz) {
         unregisterInternal(clazz, subCommands);
     }
 
-    public static boolean isSubCommandRegistered(Class<? extends SubCommandBuilder> clazz) {
+    public static boolean isSubCommandRegistered(Class<? extends BotSubCommandBuilder> clazz) {
         return isRegisteredInternal(clazz, subCommands);
     }
 
-    public static Set<Class<? extends SubCommandBuilder>> listRegisteredSubCommands() {
+    public static Set<Class<? extends BotSubCommandBuilder>> listRegisteredSubCommands() {
         return listRegisteredInternal(subCommands);
     }
 
-    public static Collection<SubCommandBuilder> getAllSubCommands() {
+    public static Collection<BotSubCommandBuilder> getAllSubCommands() {
         return getAllInternal(subCommands);
     }
 
@@ -162,9 +162,9 @@ public class InstanceManager {
 
     public static void unregister(Class<?> clazz) {
         if (commandCache.containsKey(clazz)) {
-            unregisterCommand((Class<? extends CommandBuilder>) clazz);
+            unregisterCommand((Class<? extends BotCommandBuilder>) clazz);
         } else if (subCommands.containsKey(clazz)) {
-            unregisterSubCommand((Class<? extends SubCommandBuilder>) clazz);
+            unregisterSubCommand((Class<? extends BotSubCommandBuilder>) clazz);
         } else if (listeners.containsKey(clazz)) {
             unregisterListener((Class<? extends ListenerAdapter>) clazz);
         } else if (modals.containsKey(clazz)) {

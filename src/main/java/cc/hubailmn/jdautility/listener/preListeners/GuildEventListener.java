@@ -1,7 +1,7 @@
 package cc.hubailmn.jdautility.listener.preListeners;
 
 import cc.hubailmn.jdautility.BaseBot;
-import cc.hubailmn.jdautility.commands.CommandUtil;
+import cc.hubailmn.jdautility.commands.BotCommandUtil;
 import cc.hubailmn.jdautility.listener.ListenerBuilder;
 import cc.hubailmn.jdautility.listener.annotation.BotListener;
 import net.dv8tion.jda.api.JDA;
@@ -20,12 +20,12 @@ public class GuildEventListener extends ListenerBuilder {
 
     @Override
     public void onGuildJoin(@NotNull GuildJoinEvent e) {
-        CommandUtil.register(e.getGuild());
+        BotCommandUtil.register(e.getGuild());
     }
 
     @Override
     public void onGuildReady(@NotNull GuildReadyEvent e) {
-        CommandUtil.register(e.getGuild());
+        BotCommandUtil.register(e.getGuild());
     }
 
     @Override
@@ -35,8 +35,8 @@ public class GuildEventListener extends ListenerBuilder {
                     .allMatch(status -> status == JDA.Status.CONNECTED);
 
             if (allShardsReady && initialized.compareAndSet(false, true)) {
-                CommandUtil.updateGlobalCommands();
-                CommandUtil.registerAllGuild();
+                BotCommandUtil.updateGlobalCommands();
+                BotCommandUtil.registerAllGuild();
             }
         }, 5, TimeUnit.SECONDS);
     }

@@ -11,14 +11,14 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 @Data
-public class ConfigBuilder {
+public class BotConfigBuilder {
 
     private String name;
     private String path;
     private File file;
     private Map<String, Object> config = new LinkedHashMap<>();
 
-    public ConfigBuilder() {
+    public BotConfigBuilder() {
         LoadConfig annotation = this.getClass().getAnnotation(LoadConfig.class);
         if (annotation == null) {
             CSend.error("Failed to load config: " + this.getClass().getSimpleName() + ". Config class must be annotated with @LoadConfig.");

@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public abstract class SubCommandBuilder extends ListenerAdapter {
+public abstract class BotSubCommandBuilder extends ListenerAdapter {
 
     private final Map<String, List<String>> autoCompletion = new HashMap<>();
     private String name;
@@ -30,7 +30,7 @@ public abstract class SubCommandBuilder extends ListenerAdapter {
     private Class<?> parent;
     private List<Permission> requiredPermission = new ArrayList<>();
 
-    public SubCommandBuilder() {
+    public BotSubCommandBuilder() {
         BotSubCommand annotation = this.getClass().getAnnotation(BotSubCommand.class);
 
         if (annotation == null) {

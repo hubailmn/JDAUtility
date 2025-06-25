@@ -1,14 +1,14 @@
 package cc.hubailmn.jdautility.config.file;
 
 import cc.hubailmn.jdautility.BaseBot;
-import cc.hubailmn.jdautility.config.ConfigBuilder;
+import cc.hubailmn.jdautility.config.BotConfigBuilder;
 import cc.hubailmn.jdautility.config.annotation.IgnoreFile;
 import cc.hubailmn.jdautility.config.annotation.LoadConfig;
 import lombok.Data;
 
 @LoadConfig(path = "config/DBConfig.yml")
 @IgnoreFile(database = true)
-public class DBConfig extends ConfigBuilder {
+public class DBConfig extends BotConfigBuilder {
 
     public DBConfig() {
         super();
@@ -46,7 +46,7 @@ public class DBConfig extends ConfigBuilder {
         private final String username;
         private final String password;
 
-        public MySQLConfig(ConfigBuilder config) {
+        public MySQLConfig(BotConfigBuilder config) {
             String path = "database.MySQL.";
             this.connectionString = config.getString(path + "connection-string");
             this.endPoint = config.getString(path + "endpoint");
@@ -60,7 +60,7 @@ public class DBConfig extends ConfigBuilder {
     public static class SQLiteConfig {
         private final String sqlitePath;
 
-        public SQLiteConfig(ConfigBuilder config) {
+        public SQLiteConfig(BotConfigBuilder config) {
             this.sqlitePath = config.getString("database.SQLite.path");
         }
     }

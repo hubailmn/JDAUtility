@@ -1,6 +1,6 @@
 package cc.hubailmn.jdautility;
 
-import cc.hubailmn.jdautility.config.ConfigUtil;
+import cc.hubailmn.jdautility.config.BotConfigUtil;
 import cc.hubailmn.jdautility.config.file.BotConfig;
 import cc.hubailmn.jdautility.database.DataBaseConnection;
 import cc.hubailmn.jdautility.log.CSend;
@@ -53,7 +53,7 @@ public abstract class BaseBot {
 
             Register.config();
 
-            BotConfig config = ConfigUtil.getConfig(BotConfig.class);
+            BotConfig config = BotConfigUtil.getConfig(BotConfig.class);
 
             if (config == null) {
                 throw new IllegalStateException("BotConfig is missing.");

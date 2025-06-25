@@ -1,13 +1,13 @@
 package cc.hubailmn.jdautility.register;
 
 import cc.hubailmn.jdautility.BaseBot;
-import cc.hubailmn.jdautility.commands.CommandBuilder;
-import cc.hubailmn.jdautility.commands.CommandUtil;
-import cc.hubailmn.jdautility.commands.SubCommandBuilder;
+import cc.hubailmn.jdautility.commands.BotCommandBuilder;
+import cc.hubailmn.jdautility.commands.BotCommandUtil;
+import cc.hubailmn.jdautility.commands.BotSubCommandBuilder;
 import cc.hubailmn.jdautility.commands.annotation.BotCommand;
 import cc.hubailmn.jdautility.commands.annotation.BotSubCommand;
-import cc.hubailmn.jdautility.config.ConfigBuilder;
-import cc.hubailmn.jdautility.config.ConfigUtil;
+import cc.hubailmn.jdautility.config.BotConfigBuilder;
+import cc.hubailmn.jdautility.config.BotConfigUtil;
 import cc.hubailmn.jdautility.config.annotation.IgnoreFile;
 import cc.hubailmn.jdautility.config.annotation.LoadConfig;
 import cc.hubailmn.jdautility.database.DataBaseConnection;
@@ -40,7 +40,7 @@ public class Register {
 
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(LoadConfig.class);
         scanAndRegister(classes, "Config", clazz -> {
-            if (!ConfigBuilder.class.isAssignableFrom(clazz)) {
+            if (!BotConfigBuilder.class.isAssignableFrom(clazz)) {
                 CSend.warn(clazz.getName() + " is annotated with @LoadConfig but does not extend ConfigBuilder.");
                 return;
             }
@@ -54,11 +54,11 @@ public class Register {
             }
 
             @SuppressWarnings("unchecked")
-            Class<? extends ConfigBuilder> typedClass = (Class<? extends ConfigBuilder>) clazz;
+            Class<? extends BotConfigBuilder> typedClass = (Class<? extends BotConfigBuilder>) clazz;
 
             try {
-                ConfigBuilder config = typedClass.getDeclaredConstructor().newInstance();
-                ConfigUtil.getCONFIG_INSTANCE().put(typedClass, config);
+                BotConfigBuilder config = typedClass.getDeclaredConstructor().newInstance();
+                BotConfigUtil.getCONFIG_INSTANCE().put(typedClass, config);
             } catch (Exception e) {
                 CSend.error("Failed to load config " + clazz.getSimpleName() + ": " + e.getMessage());
                 CSend.error(e);
@@ -92,21 +92,21 @@ public class Register {
 
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(BotCommand.class);
         scanAndRegister(classes, "Command", clazz -> {
-            if (!CommandBuilder.class.isAssignableFrom(clazz)) {
+            if (!BotCommandBuilder.class.isAssignableFrom(clazz)) {
                 CSend.warn(clazz.getName() + " is annotated with @BotCommand but does not extend CommandBuilder.");
                 return;
             }
 
             @SuppressWarnings("unchecked")
-            Class<? extends CommandBuilder> typedClass = (Class<? extends CommandBuilder>) clazz;
+            Class<? extends BotCommandBuilder> typedClass = (Class<? extends BotCommandBuilder>) clazz;
 
-            CommandBuilder commandBuilder = typedClass.getDeclaredConstructor().newInstance();
+            BotCommandBuilder commandBuilder = typedClass.getDeclaredConstructor().newInstance();
             InstanceManager.addCommand(typedClass, commandBuilder);
             BaseBot.getShardManager().addEventListener(commandBuilder);
-            CommandUtil.addCommand(commandBuilder.getCommandData());
+            BotCommandUtil.addCommand(commandBuilder.getCommandData());
         });
 
-        CommandUtil.registerAllGuild();
+        BotCommandUtil.registerAllGuild();
     }
 
     public static void subCommands() {
@@ -116,15 +116,15 @@ public class Register {
 
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(BotSubCommand.class);
         scanAndRegister(classes, "Sub Command", clazz -> {
-            if (!SubCommandBuilder.class.isAssignableFrom(clazz)) {
+            if (!BotSubCommandBuilder.class.isAssignableFrom(clazz)) {
                 CSend.warn(clazz.getName() + " is annotated with @BotSubCommand but does not extend SubCommandBuilder.");
                 return;
             }
 
             @SuppressWarnings("unchecked")
-            Class<? extends SubCommandBuilder> typedClass = (Class<? extends SubCommandBuilder>) clazz;
+            Class<? extends BotSubCommandBuilder> typedClass = (Class<? extends BotSubCommandBuilder>) clazz;
 
-            SubCommandBuilder subCommandBuilder = typedClass.getDeclaredConstructor().newInstance();
+            BotSubCommandBuilder subCommandBuilder = typedClass.getDeclaredConstructor().newInstance();
             InstanceManager.addSubCommand(typedClass, subCommandBuilder);
             BaseBot.getShardManager().addEventListener(subCommandBuilder);
         });

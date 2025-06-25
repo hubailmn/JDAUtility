@@ -1,6 +1,6 @@
 package cc.hubailmn.jdautility.config.file;
 
-import cc.hubailmn.jdautility.config.ConfigBuilder;
+import cc.hubailmn.jdautility.config.BotConfigBuilder;
 import cc.hubailmn.jdautility.config.annotation.LoadConfig;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.entities.Activity;
 @LoadConfig(
         path = "config/BotConfig.yml"
 )
-public class BotConfig extends ConfigBuilder {
+public class BotConfig extends BotConfigBuilder {
 
     private final String PREFIX = "bot.";
 

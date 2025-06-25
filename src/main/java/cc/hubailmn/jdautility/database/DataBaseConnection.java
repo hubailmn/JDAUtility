@@ -1,7 +1,7 @@
 package cc.hubailmn.jdautility.database;
 
 import cc.hubailmn.jdautility.BaseBot;
-import cc.hubailmn.jdautility.config.ConfigUtil;
+import cc.hubailmn.jdautility.config.BotConfigUtil;
 import cc.hubailmn.jdautility.config.file.DBConfig;
 import cc.hubailmn.jdautility.log.CSend;
 import com.zaxxer.hikari.HikariConfig;
@@ -18,7 +18,7 @@ import java.sql.SQLException;
 public final class DataBaseConnection {
 
     @Getter
-    private static DBConfig config = ConfigUtil.getConfig(DBConfig.class);
+    private static DBConfig config = BotConfigUtil.getConfig(DBConfig.class);
 
     @Setter
     private static Connection connection;
@@ -138,8 +138,8 @@ public final class DataBaseConnection {
     public static void reload() {
         CSend.info("§6Reloading database connection...");
         close();
-        ConfigUtil.reload(DBConfig.class);
-        config = ConfigUtil.getConfig(DBConfig.class);
+        BotConfigUtil.reload(DBConfig.class);
+        config = BotConfigUtil.getConfig(DBConfig.class);
         initialize();
     }
 
