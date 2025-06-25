@@ -6,7 +6,7 @@
 
     <groupId>cc.hubailmn</groupId>
     <artifactId>JDAUtility</artifactId>
-    <version>v1.0.0</version>
+    <version>LocalBuild</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -91,16 +91,6 @@
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
             <version>5.6.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>club.minnced</groupId>
-                    <artifactId>opus-java</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.google.crypto.tink</groupId>
-                    <artifactId>tink</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
